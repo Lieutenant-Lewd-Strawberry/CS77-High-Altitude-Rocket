@@ -39,10 +39,10 @@ class GUI
 {
 	private:
 
-		enum SHADERS { GAUGE_SHADER = 0, DIAL_SHADER = 1, TEXT_SHADER = 2, HART_SHADER = 3, PLATE_SHADER = 4 };
+		enum SHADERS { GAUGE_SHADER = 0, DIAL_SHADER = 1, TEXT_SHADER = 2, HART_SHADER = 3, PLATE_SHADER = 4, RED_TEXT_SHADER = 5};
 		enum MESHES { GAUGE_MESH = 0, DIAL_MESH = 1, TEXT_MESH = 2 };
 		enum TEXTURES { GAUGE_TEXTURE = 0, HART_TEXTURE = 1, PLATE_TEXTURE = 2 };
-		enum MATERIALS { GAUGE_MATERIAL = 0, DIAL_MATERIAL = 1, TEXT_MATERIAL = 2, HART_MATERIAL = 3, PLATE_MATERIAL = 4 };
+		enum MATERIALS { GAUGE_MATERIAL = 0, DIAL_MATERIAL = 1, TEXT_MATERIAL = 2, HART_MATERIAL = 3, PLATE_MATERIAL = 4, RED_TEXT_MATERIAL = 2 };
 		enum LIGHTS { CENTER_LIGHT = 0 };
 
 		const int Width;
@@ -214,6 +214,7 @@ class GUI
 			this->Shaders.push_back( new Shader( this->Major, this->Minor, "TextVertex.glsl", "", "", "", "TextFragment.glsl" ) );
 			this->Shaders.push_back( new Shader( this->Major, this->Minor, "GaugeVertex.glsl", "", "", "", "GaugeFragment.glsl" ) );
 			this->Shaders.push_back( new Shader( this->Major, this->Minor, "GaugeVertex.glsl", "", "", "", "GaugeFragment.glsl" ) );
+			this->Shaders.push_back( new Shader( this->Major, this->Minor, "TextVertex.glsl", "", "", "", "TextFragment.glsl" ) );
 		}
 
 		void InitializeMeshes( )
@@ -242,6 +243,7 @@ class GUI
 			this->Materials.push_back( new Material( glm::vec3( 0.5f ), glm::vec3( 1.0f ), glm::vec3( 1.0f ), 0, 0 ) );
 			this->Materials.push_back( new Material( glm::vec3( 0.9f ), glm::vec3( 0.0f ), glm::vec3( 0.0f ), HART_TEXTURE, HART_TEXTURE ) );
 			this->Materials.push_back( new Material( glm::vec3( 0.9f ), glm::vec3( 0.0f ), glm::vec3( 0.3f ), PLATE_TEXTURE, PLATE_TEXTURE ) );
+			this->Materials.push_back( new Material( glm::vec3( 0.5f ), glm::vec3( 1.0f ), glm::vec3( 1.0f ), 0, 0 ) );
 		}
 
 		void InitializeLights( )
@@ -275,6 +277,11 @@ class GUI
 			this->Shaders[ PLATE_SHADER ]->SetMatrix4fv( this->ProjectionMatrix, "ProjectionMatrix", GL_FALSE );
 			this->Shaders[ PLATE_SHADER ]->SetVector3fv( *this->Lights[CENTER_LIGHT], "LightPosition1" );
 			this->Shaders[ PLATE_SHADER ]->SetVector3fv( this->Camera, "Camera" );
+
+			this->Shaders[ RED_TEXT_SHADER ]->SetMatrix4fv( this->ViewMatrix, "ViewMatrix", GL_FALSE );
+			this->Shaders[ RED_TEXT_SHADER ]->SetMatrix4fv( this->ProjectionMatrix, "ProjectionMatrix", GL_FALSE );
+			this->Shaders[ RED_TEXT_SHADER ]->SetVector3fv( *this->Lights[ CENTER_LIGHT ], "LightPosition1" );
+			this->Shaders[ RED_TEXT_SHADER ]->SetVector3fv( this->Camera, "Camera" );
 		}
 
 		void UpdateUniforms( )
@@ -288,6 +295,7 @@ class GUI
 			this->Shaders[ TEXT_SHADER ]->SetMatrix4fv( ProjectionMatrix, "ProjectionMatrix", GL_FALSE );
 			this->Shaders[ HART_SHADER ]->SetMatrix4fv( ProjectionMatrix, "ProjectionMatrix", GL_FALSE );
 			this->Shaders[ PLATE_SHADER ]->SetMatrix4fv( ProjectionMatrix, "ProjectionMatrix", GL_FALSE );
+			this->Shaders[ RED_TEXT_SHADER ]->SetMatrix4fv( ProjectionMatrix, "ProjectionMatrix", GL_FALSE );
 		}
 
 		void InitializeVariables( )
@@ -395,9 +403,8 @@ class GUI
 
 			while ( glfwGetTime( ) < this->Time + 1.0f / 60 )
 			{
-				//this->BoosterBox->Update( );
-				this->BoosterBox->Render( this->Shaders[ TEXT_SHADER ], this->Shaders[ PLATE_SHADER ], this->Shaders[ GAUGE_SHADER ], this->Shaders[ DIAL_SHADER ] );
-				this->SustainerBox->Render( this->Shaders[ TEXT_SHADER ], this->Shaders[ PLATE_SHADER ], this->Shaders[ GAUGE_SHADER ], this->Shaders[ DIAL_SHADER ] );
+				this->BoosterBox->Render( this->Shaders[ TEXT_SHADER ], this->Shaders[ RED_TEXT_SHADER ], this->Shaders[ PLATE_SHADER ], this->Shaders[ GAUGE_SHADER ], this->Shaders[ DIAL_SHADER ] );
+				this->SustainerBox->Render( this->Shaders[ TEXT_SHADER ], this->Shaders[ RED_TEXT_SHADER ], this->Shaders[ PLATE_SHADER ], this->Shaders[ GAUGE_SHADER ], this->Shaders[ DIAL_SHADER ] );
 				this->Meshes[ 0 ]->Render( this->Shaders[ HART_SHADER ] );
 				this->Meshes[ 1 ]->Render( this->Shaders[ PLATE_SHADER ] ); 
 				this->Meshes[ 2 ]->Render( this->Shaders[ TEXT_SHADER ] );

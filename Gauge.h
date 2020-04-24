@@ -15,6 +15,7 @@ class Gauge
 		float Min;
 		float Max;
 		float Change;
+		float RedAlert;
 
 		double CurrentData;
 		double PreviousData;
@@ -33,6 +34,7 @@ class Gauge
 			this->Min = Min;
 			this->Max = Max;
 			this->Change = ( Max - Min ) / 300;
+			this->RedAlert = false;
 			
 			int Step = Min;
 			for ( int i = 0; i < 11; i++ )
@@ -119,7 +121,10 @@ class Gauge
 
 		void Update( float Data  )
 		{ 
-
+			if ( this->CurrentData > ( this->Max * 0.8f ) )
+			{
+				RedAlert = true;
+			}
 
 			this->CurrentData = Data;
 
@@ -157,5 +162,10 @@ class Gauge
 					TextShader->UnUse( );
 				}
 			}
+		}
+
+		bool GetAlert( )
+		{
+			return RedAlert;
 		}
 };

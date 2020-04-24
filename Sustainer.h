@@ -10,22 +10,30 @@ class Sustainer
 	private:
 
 		Mesh *SustainerTitle;
+		Mesh* RedSustainerTitle;
 		Mesh *SustainerPlate;
+		bool RedAlert;
 
 		Mesh *SustainerSpeedTitle;
-		Mesh *SustainerSpeedUnit;
+		Mesh* SustainerSpeedUnit;
+		Mesh* RedSustainerSpeedTitle;
+		Mesh* RedSustainerSpeedUnit;
 		Gauge *SustainerSpeed;
 		Mesh *SustainerSpeedPlate;
 		Mesh **SpeedNumbers;
 		float Speed;
 		Readout *SustainerSpeedReadout;
+		bool SpeedRedAlert;
 
 		Mesh *SustainerAccelerationTitle;
 		Mesh *SustainerAccelerationUnit;
+		Mesh* RedSustainerAccelerationTitle;
+		Mesh* RedSustainerAccelerationUnit;
 		Gauge *SustainerAcceleration;
 		Mesh *SustainerAccelerationPlate;
 		float Acceleration;
 		Readout* SustainerAccelerationReadout;
+		bool AccelerationRedAlert;
 
 		Mesh *SustainerAltitudeTitle;
 		Mesh *SustainerAltitudeUnit;
@@ -67,21 +75,29 @@ class Sustainer
 		Sustainer( )
 		{
 			this->SustainerTitle = new Mesh("Sustainer.obj", glm::vec3(1443.5f, 840.0f, -10.0f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(50.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+			this->RedSustainerTitle = new Mesh("Sustainer.obj", glm::vec3(1443.5f, 840.0f, -10.0f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(50.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 			this->SustainerPlate = new Mesh("Readout.obj", glm::vec3(1443.5f, 858.0f, -40.0f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(35.0f, 35.0f, 35.0f));
+			this->RedAlert = false;
 
 			this->SustainerSpeedTitle = new Mesh("Speed.obj", glm::vec3(1425.0f, 490.0f, -10.0f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(20.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 			this->SustainerSpeedUnit = new Mesh("FTS.obj", glm::vec3(1470.0f, 493.0f, -10.0f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(12.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+			this->RedSustainerSpeedTitle = new Mesh("Speed.obj", glm::vec3(1425.0f, 490.0f, -10.0f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(20.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+			this->RedSustainerSpeedUnit = new Mesh("FTS.obj", glm::vec3(1470.0f, 493.0f, -10.0f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(12.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 			this->SustainerSpeed = new Gauge(glm::vec3(1440, 660, -20.0f), 0, 1000);
 			this->SustainerSpeedPlate = new Mesh("Readout.obj", glm::vec3(1442.5f, 510.0f, -40.0f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(35.0f, 35.0f, 35.0f));
-			this->Speed = 653.4224;
+			this->Speed = 253.4224;
 			this->SustainerSpeedReadout = new Readout(this->Speed, 1442.5f, 510.0f, -40.0f);
+			this->SpeedRedAlert = false;
 
 			this->SustainerAccelerationTitle = new Mesh("Acceleration.obj", glm::vec3(1424.0f, 140.0f, -10.0f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(20.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 			this->SustainerAccelerationUnit = new Mesh("FTS2.obj", glm::vec3(1502.0f, 143.0f, -10.0f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(12.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+			this->RedSustainerAccelerationTitle = new Mesh("Acceleration.obj", glm::vec3(1424.0f, 140.0f, -10.0f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(20.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+			this->RedSustainerAccelerationUnit = new Mesh("FTS2.obj", glm::vec3(1502.0f, 143.0f, -10.0f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(12.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 			this->SustainerAcceleration = new Gauge(glm::vec3(1440, 310, -20.0f), 0, 900);
 			this->SustainerAccelerationPlate = new Mesh("Readout.obj", glm::vec3(1442.5f, 160.0f, -40.0f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(35.0f, 35.0f, 35.0f));
 			this->Acceleration = 257.45;
 			this->SustainerAccelerationReadout = new Readout(this->Speed, 1442.5f, 160.0f, -40.0f);
+			this->AccelerationRedAlert = false;
 
 			this->SustainerAltitudeTitle = new Mesh("Altitude.obj", glm::vec3(1435.0f, 40.0f, -10.0f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(20.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 			this->SustainerAltitudeUnit = new Mesh("FT.obj", glm::vec3(1485, 43.0f, -10.0f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(12.0f), glm::vec3(0.0f, 1.0f, 0.0f));
@@ -132,10 +148,12 @@ class Sustainer
 			this->SustainerSpeed->Update(this->Speed);
 			this->Speed += 0.1;
 			this->SustainerSpeedReadout->Update(this->Speed);
+			SpeedRedAlert = this->SustainerSpeed->GetAlert();
 
 			this->SustainerAcceleration->Update(this->Acceleration);
 			this->Acceleration += 0.03;
 			this->SustainerAccelerationReadout->Update(this->Acceleration);
+			AccelerationRedAlert = this->SustainerAcceleration->GetAlert( );
 
 			this->Altitude += 100;
 			this->SustainerAltitudeReadout->Update(this->Altitude);
@@ -148,6 +166,11 @@ class Sustainer
 
 			this->Mach += 0.01;
 			this->SustainerMachReadout->Update(this->Mach);
+
+			if (SpeedRedAlert || AccelerationRedAlert)
+			{
+				this->RedAlert = true;
+			}
 
 			if ( this->Speed > this->MaxSpeed )
 			{
@@ -166,42 +189,94 @@ class Sustainer
 			this->AngleLineVariable->Rotate(glm::vec3(0.0f, 0.001, 0.0f));
 		}
 
-		void Render( Shader *TextShader, Shader *PlateShader, Shader *GaugeShader, Shader *DialShader )
+		void Render( Shader *TextShader, Shader* RedTextShader, Shader *PlateShader, Shader *GaugeShader, Shader *DialShader )
 		{
-			TextShader->Use( );
-			SustainerTitle->Render( TextShader );
-			TextShader->UnUse( );
-			PlateShader->Use( );
-			SustainerPlate->Render( PlateShader );
-			PlateShader->UnUse( );
+			if ( RedAlert )
+			{
+				TextShader->Use();
+				RedSustainerTitle->Render(TextShader);
+				TextShader->UnUse();
+				PlateShader->Use();
+				SustainerPlate->Render(PlateShader);
+				PlateShader->UnUse();
+			}
+			else
+			{
+				TextShader->Use();
+				SustainerTitle->Render(TextShader);
+				TextShader->UnUse();
+				PlateShader->Use();
+				SustainerPlate->Render(PlateShader);
+				PlateShader->UnUse();
+			}
 
-			TextShader->Use( );
-			SustainerSpeedTitle->Render( TextShader );
-			TextShader->UnUse( );
-			TextShader->Use( );
-			SustainerSpeedUnit->Render( TextShader );
-			TextShader->UnUse( );
-			SustainerSpeed->Render( TextShader, GaugeShader, DialShader );
-			PlateShader->Use( );
-			SustainerSpeedPlate->Render( PlateShader );
-			PlateShader->UnUse( );
-			TextShader->Use( );
-			SustainerSpeedReadout->Render( TextShader );
-			TextShader->UnUse( );
+			if (SpeedRedAlert)
+			{
+				TextShader->Use( );
+				RedSustainerSpeedTitle->Render( TextShader );
+				TextShader->UnUse( );
+				TextShader->Use( );
+				RedSustainerSpeedUnit->Render( TextShader );
+				TextShader->UnUse( );
+				SustainerSpeed->Render( TextShader, GaugeShader, DialShader );
+				PlateShader->Use( );
+				SustainerSpeedPlate->Render( PlateShader );
+				PlateShader->UnUse( );
+				TextShader->Use( );
+				SustainerSpeedReadout->Render( TextShader );
+				TextShader->UnUse( );
+			}
+			else
+			{
+				TextShader->Use();
+				SustainerSpeedTitle->Render(TextShader);
+				TextShader->UnUse();
+				TextShader->Use();
+				SustainerSpeedUnit->Render(TextShader);
+				TextShader->UnUse();
+				SustainerSpeed->Render(TextShader, GaugeShader, DialShader);
+				PlateShader->Use();
+				SustainerSpeedPlate->Render(PlateShader);
+				PlateShader->UnUse();
+				TextShader->Use();
+				SustainerSpeedReadout->Render(TextShader);
+				TextShader->UnUse();
+			}
 
-			TextShader->Use( );
-			SustainerAccelerationTitle->Render( TextShader );
-			TextShader->UnUse( );
-			TextShader->Use( );
-			SustainerAccelerationUnit->Render( TextShader );
-			TextShader->UnUse( );
-			SustainerAcceleration->Render( TextShader, GaugeShader, DialShader );
-			PlateShader->Use( );
-			SustainerAccelerationPlate->Render( PlateShader );
-			PlateShader->UnUse( );
-			TextShader->Use( );
-			SustainerAccelerationReadout->Render( TextShader );
-			TextShader->UnUse( );
+
+			
+			if (AccelerationRedAlert)
+			{
+				TextShader->Use();
+				RedSustainerAccelerationTitle->Render(TextShader);
+				TextShader->UnUse();
+				TextShader->Use();
+				RedSustainerAccelerationUnit->Render(TextShader);
+				TextShader->UnUse();
+				SustainerAcceleration->Render(TextShader, GaugeShader, DialShader);
+				PlateShader->Use();
+				SustainerAccelerationPlate->Render(PlateShader);
+				PlateShader->UnUse();
+				TextShader->Use();
+				SustainerAccelerationReadout->Render(TextShader);
+				TextShader->UnUse();
+			}
+			else
+			{
+				TextShader->Use();
+				SustainerAccelerationTitle->Render(TextShader);
+				TextShader->UnUse();
+				TextShader->Use();
+				SustainerAccelerationUnit->Render(TextShader);
+				TextShader->UnUse();
+				SustainerAcceleration->Render(TextShader, GaugeShader, DialShader);
+				PlateShader->Use();
+				SustainerAccelerationPlate->Render(PlateShader);
+				PlateShader->UnUse();
+				TextShader->Use();
+				SustainerAccelerationReadout->Render(TextShader);
+				TextShader->UnUse();
+			}
 
 			TextShader->Use( );
 			SustainerAltitudeTitle->Render( TextShader );
