@@ -6,6 +6,8 @@
 #include <glew.h>
 #include <glfw3.h>
 
+
+// Primitive class for importing a texture from an image file. Do not modify.
 class Texture
 {
 	private:

@@ -12,6 +12,8 @@
 
 #include "Mesh.h"
 
+
+// Primitive for a text readout, do not modify directly. Change constructor parameters to get variants.
 class Readout
 {
 	private:

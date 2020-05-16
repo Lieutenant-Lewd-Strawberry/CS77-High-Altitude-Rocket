@@ -45,6 +45,8 @@ class GUI
 		enum MATERIALS { GAUGE_MATERIAL = 0, DIAL_MATERIAL = 1, TEXT_MATERIAL = 2, HART_MATERIAL = 3, PLATE_MATERIAL = 4, RED_TEXT_MATERIAL = 2 };
 		enum LIGHTS { CENTER_LIGHT = 0 };
 
+
+		// window variables
 		const int Width;
 		const int Height;
 		int FrameBufferWidth;
@@ -55,17 +57,18 @@ class GUI
 		double Time;
 		GLFWwindow *Window;
 
+		// camera view variables
 		glm::vec3 Up;
 		glm::vec3 Front;
 		glm::vec3 Camera;
 		glm::mat4 ViewMatrix;
-
 		//bool ProjectionMode = false;
 		float FieldOfView;
 		float NearPlane;
 		float FarPlane;
 		glm::mat4 ProjectionMatrix;
 
+		// Vectors holding graphics objects.
 		std::vector< Shader * > Shaders;
 		std::vector< Mesh * > Meshes;
 		std::vector< Texture * > Textures;
@@ -75,6 +78,7 @@ class GUI
 		Booster *BoosterBox;
 		Sustainer *SustainerBox;
 
+		// callback function to get keyboard input from a user.
 		static void WindowKeyboardInput( GLFWwindow *Window, int Key, int ScanCode, int Action, int Mods )
 		{
 			if ( Key == GLFW_KEY_ESCAPE && Action == GLFW_PRESS )
@@ -125,6 +129,7 @@ class GUI
 			*/
 		}
 		
+		// Function to initialize the window manager library, GLFW
 		void InitializeGLFW( )
 		{
 			if ( glfwInit( ) == GLFW_FALSE )
@@ -134,38 +139,46 @@ class GUI
 			}
 		}
 
+		// Callback function that gets called when the window recieves a resize request. Resizes the viewport of the window.
 		static void WindowResizeCallback( GLFWwindow *Window, int FrameBufferWidth, int FrameBufferHeight )
 		{
 			glViewport( 0, 0, FrameBufferWidth, FrameBufferHeight );
 		}
 
+		// Tells GLFW that the window recieves a exit request, user pressed escape or the red exit button
 		void SetWindowShouldClose( )
 		{
 			glfwSetWindowShouldClose( this->Window, GLFW_TRUE );
 		}
 
-
+		// Initializes the window variables.
 		void InitializeWindow( const char *Name, bool Resizable )
 		{
+			//Window information, setting opengl version and making window resizable
 			glfwWindowHint( GLFW_OPENGL_ANY_PROFILE, GLFW_OPENGL_CORE_PROFILE );
 			glfwWindowHint( GLFW_CONTEXT_VERSION_MAJOR, this->Major );
 			glfwWindowHint( GLFW_CONTEXT_VERSION_MINOR, this->Minor ); 
 			glfwWindowHint( GLFW_RESIZABLE, Resizable );
 
+			// Make new window
 			this->Window = glfwCreateWindow( this->Width, this->Height, Name, NULL, NULL );
 
 			int Width;
 			int Height;
+
+			// Get image and set it as window icon.
 			unsigned char* TextureData = stbi_load( "HART.png", &Width, &Height, NULL, STBI_rgb_alpha );
 			const GLFWimage Image{ Width, Height, TextureData };
 			glfwSetWindowIcon( this->Window, 1, &Image ) ;
 
+			// Verify the window was created successfully
 			if ( this->Window == nullptr )
 			{
 				std::cout << "Error: Failed to create Window!" << std::endl;
 				glfwTerminate( );
 			}
 
+			// Seting the callback functions and initializeing the frame size
 			glfwGetFramebufferSize( this->Window, &this->FrameBufferWidth, &this->FrameBufferHeight );
 			glfwSetFramebufferSizeCallback( this->Window, this->WindowResizeCallback );
 			glfwSetKeyCallback( this->Window, this->WindowKeyboardInput );
@@ -184,10 +197,11 @@ class GUI
 			}
 		}
 
+		// Initializes opengl information, sets objects to be solid and not seethrough on any sides.
+		// Sets 3D mesh triangle creation to counter clockwise
 		void InitializeOpenGL( )
 		{
 			glEnable( GL_DEPTH_TEST );
-
 			//glEnable( GL_CULL_FACE );
 			//glCullFace( GL_BACK );
 			glFrontFace( GL_CCW );
@@ -198,6 +212,7 @@ class GUI
 			glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
 		}
 
+		// Initializes matrices for camera view and orthographic perspective
 		void InitializeMatrices( )
 		{
 			this->ViewMatrix = glm::mat4( 1.0f );
@@ -207,6 +222,9 @@ class GUI
 			this->ProjectionMatrix = glm::ortho( 0.0f, ( float )( this->Width ), 0.0f, ( float )( this->Height ), -1.0f, 100.0f );//glm::perspective( glm::radians( this->FieldOfView ), static_cast< float >( this->FrameBufferWidth ) / this->FrameBufferHeight, this->NearPlane, this->FarPlane );
 		}
 
+		// Push back shaders for the GUI objects.
+		// Paths to .glsl shader files to be used together.
+		// Can have vertex, geometry, compute, and fragment shaders.
 		void InitializeShaders( )
 		{
 			this->Shaders.push_back( new Shader( this->Major, this->Minor, "GaugeVertex.glsl", "", "", "", "GaugeFragment.glsl" ) );
@@ -216,7 +234,11 @@ class GUI
 			this->Shaders.push_back( new Shader( this->Major, this->Minor, "GaugeVertex.glsl", "", "", "", "GaugeFragment.glsl" ) );
 			this->Shaders.push_back( new Shader( this->Major, this->Minor, "TextVertex.glsl", "", "", "", "TextFragment.glsl" ) );
 		}
-
+		// Push back meshes for the GUI objects. With hardcoded values.
+		// Parameter 1, path to 3D .obj object.
+		// parameter 2, x, y, z pixel coordinates of position on screen for object.
+		// Parameter 3, x, y, z rotation of the object with respect to its original rotation.
+		// Parameter 4, x, y, z scale of the object. 1 is original size, larger than 1 is bigger, less than 1 smaller, negative flips.
 		void InitializeMeshes( )
 		{
 			this->BoosterBox = new Booster( );
@@ -229,6 +251,8 @@ class GUI
 			this->Meshes.push_back( new Mesh( "Readout.obj", glm::vec3( Width / 2, 105.0f, -40.0f ), glm::vec3( 90.0f, 0.0f, 0.0f ), glm::vec3( 50.0f, 50.0f, 90.0f ) ) );
 		}
 
+		// Push back texture for the GUI objects. With hardcoded values.
+		// Path to image and telling opengl its a 2D texture.
 		void InitializeTextures( )
 		{
 			this->Textures.push_back( new Texture( "Gauge.png", GL_TEXTURE_2D ) );
@@ -236,6 +260,8 @@ class GUI
 			this->Textures.push_back( new Texture( "Readout.png", GL_TEXTURE_2D ) );
 		}
 
+		// Initializes material objects.
+		//Parameters, ambient value, diffuse value, specular value, index to texture and specular texture.
 		void InitializeMaterials( )
 		{
 			this->Materials.push_back( new Material( glm::vec3( 0.9f ), glm::vec3( 0.0f ), glm::vec3( 0.3f ), GAUGE_TEXTURE, GAUGE_TEXTURE ) );
@@ -246,11 +272,14 @@ class GUI
 			this->Materials.push_back( new Material( glm::vec3( 0.5f ), glm::vec3( 1.0f ), glm::vec3( 1.0f ), 0, 0 ) );
 		}
 
+		// Makes a light object and give position in 3D world space.
 		void InitializeLights( )
 		{
 			this->Lights.push_back( new glm::vec3( this->Width / 2.0f, this->Height / 2.0f, 1000.0f ) );
 		}
 
+		// Sets uniform shader information specific to this GUI implementation.
+		// Lets the glsl shaders have access to values from the C++ code to be used for calulating lighting and pixel color.
 		void InitializeUniforms( )
 		{
 			this->Shaders[ GAUGE_SHADER ]->SetMatrix4fv( this->ViewMatrix, "ViewMatrix", GL_FALSE );
@@ -284,6 +313,7 @@ class GUI
 			this->Shaders[ RED_TEXT_SHADER ]->SetVector3fv( this->Camera, "Camera" );
 		}
 
+		// Updates the uniform variables. If the camera position moves for example, the shaders need the new values to recompute pixel colors
 		void UpdateUniforms( )
 		{
 			glfwGetFramebufferSize( this->Window, &this->FrameBufferWidth, &this->FrameBufferHeight );
@@ -305,6 +335,7 @@ class GUI
 
 	public:
 
+		// Default constructor calling initializer functions and seting inital window state.
 		GUI( const char *Name, const int Width, const int Height, int Major, int Minor, bool Resizable ) : Width( Width ), Height( Height ), Major( Major ), Minor( Minor )
 		{
 			this->Window = nullptr;
@@ -333,6 +364,7 @@ class GUI
 			this->InitializeVariables( );
 		}
 
+		// Deletes all dynamically allocated variables.
 		~GUI( )
 		{
 			glfwDestroyWindow( this->Window );
@@ -366,6 +398,8 @@ class GUI
 			return glfwWindowShouldClose( this->Window );
 		}
 
+		// Function that updates any information per frame. Can put whatever in here that is needed to be changed per frame.
+		// In this case booster and sustainer information and object information because the gauges have changing numbers and dial position.
 		void Update( )
 		{
 			glfwPollEvents( );
@@ -392,6 +426,7 @@ class GUI
 			this->Shaders[ PLATE_SHADER]->Use( );
 		}
 		
+		// Renders objects to the screen, updates window image.
 		void Render( )
 		{
 			//WindowKeyboardInput( this->Window, *this->Meshes[ GAUGE_MESH ] );

@@ -9,6 +9,8 @@
 #include "Texture.h"
 #include "Material.h"
 
+
+// Mesh class, primitive object that makes a 3D object and pushes it to the GPU, do not modify.
 class Mesh
 {
 	private:

@@ -14,6 +14,8 @@
 #include <mat4x4.hpp>
 #include <gtc/type_ptr.hpp>
 
+
+// Clas for importing shader files of type .glsl and using the shader. Do not modify.
 class Shader
 {
 	private:

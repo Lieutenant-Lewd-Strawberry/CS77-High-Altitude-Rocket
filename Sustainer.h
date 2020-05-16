@@ -5,6 +5,8 @@
 #include "Gauge.h"
 #include "Mesh.h"
 
+
+// Class made for sustainer management. Do not modify unless rocket team request now GUI object for sustainer stage.
 class Sustainer
 {
 	private:
@@ -72,6 +74,8 @@ class Sustainer
 
 	public:
 
+		// All objects are constructed with parameters for object file path, position vector, rotation vector, scale vector, base rgb color vector in case object does not have texture.
+		// Do not modify this implementation unless told to. Initial values provided for testing purposes.
 		Sustainer( )
 		{
 			this->SustainerTitle = new Mesh("Sustainer.obj", glm::vec3(1443.5f, 840.0f, -10.0f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(50.0f), glm::vec3(0.0f, 1.0f, 0.0f));

@@ -6,6 +6,7 @@
 #include "Mesh.h"
 #include "Readout.h"
 
+// Class made for booster management. Do not modify unless rocket team request now GUI object for booster stage.
 class Booster
 {
 	private:
@@ -54,6 +55,8 @@ class Booster
 
 	public:
 
+		// All objects are constructed with parameters for object file path, position vector, rotation vector, scale vector, base rgb color vector in case object does not have texture.
+		// Do not modify this implementation unless told to. Initial values provided for testing purposes.
 		Booster( )
 		{
 			this->BoosterTitle = new Mesh( "Bootsie.obj", glm::vec3( 157.5f, 858.0f, -10.0f ), glm::vec3( 90.0f, 0.0f, 0.0f ), glm::vec3( 50.0f ), glm::vec3( 0.0f, 1.0f, 0.0f ) );
@@ -106,6 +109,7 @@ class Booster
 			delete this->BoosterSpeed;
 		}
 
+		// Updates telemetry gui values.
 		void Update( )
 		{
 			this->BoosterSpeed->Update( this->Speed );
@@ -133,6 +137,7 @@ class Booster
 			}
 		}
 
+		// Displays constructed 3D objects.
 		void Render( Shader *TextShader, Shader* RedTextShader, Shader *PlateShader, Shader *GaugeShader, Shader *DialShader )
 		{
 			if ( RedAlert )

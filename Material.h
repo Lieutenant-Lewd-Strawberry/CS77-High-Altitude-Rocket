@@ -12,6 +12,8 @@
 
 #include "Shader.h"
 
+
+// Primitive 3D material object, do not modify.
 class Material
 {
 	private:
