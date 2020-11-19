@@ -67,6 +67,7 @@ class GUI
 		float NearPlane;
 		float FarPlane;
 		glm::mat4 ProjectionMatrix;
+		glm::mat4 ProjectionMatrixPerspective;
 
 		// Vectors holding graphics objects.
 		std::vector< Shader * > Shaders;
@@ -84,49 +85,7 @@ class GUI
 			if ( Key == GLFW_KEY_ESCAPE && Action == GLFW_PRESS )
 			{
 				glfwSetWindowShouldClose( Window, GLFW_TRUE );
-			}
-/*
-			if ( Key == GLFW_KEY_W && Action == GLFW_PRESS )
-			{
-				Meshes[ GAUGE_MESH ]->Move( glm::vec3( 0.0f, 0.0001f, 0.0f ) );
-			}
-			if ( glfwGetKey( Window, GLFW_KEY_S ) == GLFW_PRESS )
-			{
-				Mesh.Move( glm::vec3( 0.0f, -0.0001f, 0.0f ) );
-			}
-			if ( glfwGetKey( Window, GLFW_KEY_A ) == GLFW_PRESS )
-			{
-				Mesh.Move( glm::vec3( -0.0001f, 0.0f, 0.0f ) );
-			}
-			if ( glfwGetKey( Window, GLFW_KEY_D ) == GLFW_PRESS )
-			{
-				Mesh.Move( glm::vec3( 0.0001f, 0.0f, 0.0f ) );
-			}
-			if ( glfwGetKey( Window, GLFW_KEY_Q ) == GLFW_PRESS )
-			{
-				Mesh.Rotate( glm::vec3(0.0f, -0.01f, 0.0f ) );
-			}
-			if ( glfwGetKey( Window, GLFW_KEY_E ) == GLFW_PRESS )
-			{
-				Mesh.Rotate( glm::vec3( 0.0f, 0.01f, 0.0f ) );
-			}
-			if ( glfwGetKey( Window, GLFW_KEY_R) == GLFW_PRESS )
-			{
-				Mesh.Rotate( glm::vec3( -0.01f, 0.0f, 0.0f ) );
-			}
-			if ( glfwGetKey( Window, GLFW_KEY_T ) == GLFW_PRESS )
-			{
-				Mesh.Rotate( glm::vec3( 0.01f, 0.0f, 0.0f ) );
-			}
-			if ( glfwGetKey( Window, GLFW_KEY_Z ) == GLFW_PRESS )
-			{
-				Mesh.ScaleUp( glm::vec3( 0.001f ) );
-			}
-			if ( glfwGetKey( Window, GLFW_KEY_X ) == GLFW_PRESS )
-			{
-				Mesh.ScaleUp( glm::vec3( -0.001f ) );
-			}
-			*/
+			}		
 		}
 		
 		// Function to initialize the window manager library, GLFW
@@ -159,6 +118,7 @@ class GUI
 			glfwWindowHint( GLFW_CONTEXT_VERSION_MAJOR, this->Major );
 			glfwWindowHint( GLFW_CONTEXT_VERSION_MINOR, this->Minor ); 
 			glfwWindowHint( GLFW_RESIZABLE, Resizable );
+
 
 			// Make new window
 			this->Window = glfwCreateWindow( this->Width, this->Height, Name, NULL, NULL );
@@ -219,7 +179,9 @@ class GUI
 			this->ViewMatrix = glm::lookAt( this->Camera, this->Camera + this->Front, this->Up );
 
 			this->ProjectionMatrix = glm::mat4( 1.0f );
-			this->ProjectionMatrix = glm::ortho( 0.0f, ( float )( this->Width ), 0.0f, ( float )( this->Height ), -1.0f, 100.0f );//glm::perspective( glm::radians( this->FieldOfView ), static_cast< float >( this->FrameBufferWidth ) / this->FrameBufferHeight, this->NearPlane, this->FarPlane );
+			this->ProjectionMatrix = glm::ortho( 0.0f, ( float )( this->Width ), 0.0f, ( float )( this->Height ), -1.0f, 100.0f );
+			this->ProjectionMatrixPerspective = glm::mat4( 1.0f );
+			this->ProjectionMatrixPerspective = glm::perspective( glm::radians( this->FieldOfView ), static_cast< float >( this->FrameBufferWidth ) / this->FrameBufferHeight, this->NearPlane, this->FarPlane );
 		}
 
 		// Push back shaders for the GUI objects.
@@ -233,6 +195,7 @@ class GUI
 			this->Shaders.push_back( new Shader( this->Major, this->Minor, "GaugeVertex.glsl", "", "", "", "GaugeFragment.glsl" ) );
 			this->Shaders.push_back( new Shader( this->Major, this->Minor, "GaugeVertex.glsl", "", "", "", "GaugeFragment.glsl" ) );
 			this->Shaders.push_back( new Shader( this->Major, this->Minor, "TextVertex.glsl", "", "", "", "TextFragment.glsl" ) );
+			this->Shaders.push_back( new Shader( this->Major, this->Minor, "TerrainVertex.glsl", "", "", "", "TerrainFragment.glsl" ) );
 		}
 		// Push back meshes for the GUI objects. With hardcoded values.
 		// Parameter 1, path to 3D .obj object.
@@ -249,6 +212,7 @@ class GUI
 			this->Meshes.push_back( new Mesh( "Readout.obj", glm::vec3( Width / 2, 843.0f, -40.0f ), glm::vec3( 90.0f, 0.0f, 0.0f ), glm::vec3( 35.0f, 35.0f, 35.0f) ) );
 			this->Meshes.push_back( new Mesh( "Angle.obj", glm::vec3( 860.0f, 50.0f, -10.0f ), glm::vec3( 90.0f, 0.0f, 0.0f ), glm::vec3( 20.0f ), glm::vec3( 0.0f, 1.0f, 0.0f ) ) );
 			this->Meshes.push_back( new Mesh( "Readout.obj", glm::vec3( Width / 2, 105.0f, -40.0f ), glm::vec3( 90.0f, 0.0f, 0.0f ), glm::vec3( 50.0f, 50.0f, 90.0f ) ) );
+			this->Meshes.push_back( new Mesh( &Quad( ), glm::vec3( 0, 0.1, -1.0f ), glm::vec3( -72.0f, 180.0f, 0.0f ), glm::vec3( 1.70f ) ) );
 		}
 
 		// Push back texture for the GUI objects. With hardcoded values.
@@ -258,6 +222,8 @@ class GUI
 			this->Textures.push_back( new Texture( "Gauge.png", GL_TEXTURE_2D ) );
 			this->Textures.push_back( new Texture( "HART.png", GL_TEXTURE_2D ) );
 			this->Textures.push_back( new Texture( "Readout.png", GL_TEXTURE_2D ) );
+			this->Textures.push_back( new Texture( "TerrainTexture.png", GL_TEXTURE_2D ) );
+			this->Textures.push_back( new Texture( "TerrainHeight.png", GL_TEXTURE_2D ) );
 		}
 
 		// Initializes material objects.
@@ -270,12 +236,14 @@ class GUI
 			this->Materials.push_back( new Material( glm::vec3( 0.9f ), glm::vec3( 0.0f ), glm::vec3( 0.0f ), HART_TEXTURE, HART_TEXTURE ) );
 			this->Materials.push_back( new Material( glm::vec3( 0.9f ), glm::vec3( 0.0f ), glm::vec3( 0.3f ), PLATE_TEXTURE, PLATE_TEXTURE ) );
 			this->Materials.push_back( new Material( glm::vec3( 0.5f ), glm::vec3( 1.0f ), glm::vec3( 1.0f ), 0, 0 ) );
+			this->Materials.push_back( new Material( glm::vec3( 0.6f ), glm::vec3( 0.3f ), glm::vec3( 0.8f ), 3, 4 ) );
 		}
 
 		// Makes a light object and give position in 3D world space.
 		void InitializeLights( )
 		{
 			this->Lights.push_back( new glm::vec3( this->Width / 2.0f, this->Height / 2.0f, 1000.0f ) );
+			this->Lights.push_back( new glm::vec3( 1, 1, 0.0f ) );
 		}
 
 		// Sets uniform shader information specific to this GUI implementation.
@@ -311,6 +279,11 @@ class GUI
 			this->Shaders[ RED_TEXT_SHADER ]->SetMatrix4fv( this->ProjectionMatrix, "ProjectionMatrix", GL_FALSE );
 			this->Shaders[ RED_TEXT_SHADER ]->SetVector3fv( *this->Lights[ CENTER_LIGHT ], "LightPosition1" );
 			this->Shaders[ RED_TEXT_SHADER ]->SetVector3fv( this->Camera, "Camera" );
+
+			this->Shaders[ 6 ]->SetMatrix4fv( this->ViewMatrix, "ViewMatrix", GL_FALSE );
+			this->Shaders[ 6 ]->SetMatrix4fv( this->ProjectionMatrixPerspective, "ProjectionMatrix", GL_FALSE );
+			this->Shaders[ 6 ]->SetVector3fv( *this->Lights[ 1 ], "LightPosition1" );
+			this->Shaders[ 6 ]->SetVector3fv( this->Camera, "Camera" );
 		}
 
 		// Updates the uniform variables. If the camera position moves for example, the shaders need the new values to recompute pixel colors
@@ -318,7 +291,8 @@ class GUI
 		{
 			glfwGetFramebufferSize( this->Window, &this->FrameBufferWidth, &this->FrameBufferHeight );
 
-			ProjectionMatrix = glm::ortho( 0.0f, ( float )( this->Width ), 0.0f, ( float )( this->Height ), -1.0f, 100.0f );//glm::perspective( glm::radians( this->FieldOfView ), static_cast< float >( this->FrameBufferWidth ) / this->FrameBufferHeight, this->NearPlane, this->FarPlane );
+			ProjectionMatrix = glm::ortho( 0.0f, ( float )( this->Width ), 0.0f, ( float )( this->Height ), -1.0f, 100.0f );
+			ProjectionMatrixPerspective =  glm::perspective( glm::radians( this->FieldOfView ), static_cast< float >( this->FrameBufferWidth ) / this->FrameBufferHeight, this->NearPlane, this->FarPlane );
 
 			this->Shaders[ GAUGE_SHADER ]->SetMatrix4fv( ProjectionMatrix, "ProjectionMatrix", GL_FALSE );
 			this->Shaders[ DIAL_SHADER ]->SetMatrix4fv( ProjectionMatrix, "ProjectionMatrix", GL_FALSE );
@@ -326,6 +300,7 @@ class GUI
 			this->Shaders[ HART_SHADER ]->SetMatrix4fv( ProjectionMatrix, "ProjectionMatrix", GL_FALSE );
 			this->Shaders[ PLATE_SHADER ]->SetMatrix4fv( ProjectionMatrix, "ProjectionMatrix", GL_FALSE );
 			this->Shaders[ RED_TEXT_SHADER ]->SetMatrix4fv( ProjectionMatrix, "ProjectionMatrix", GL_FALSE );
+			this->Shaders[ 6 ]->SetMatrix4fv( ProjectionMatrixPerspective, "ProjectionMatrix", GL_FALSE );
 		}
 
 		void InitializeVariables( )
@@ -424,30 +399,37 @@ class GUI
 			this->Materials[ PLATE_MATERIAL ]->SendToShader( *this->Shaders[ PLATE_SHADER ] );
 			this->Textures[ PLATE_TEXTURE]->Bind( PLATE_TEXTURE );
 			this->Shaders[ PLATE_SHADER]->Use( );
+
+			this->Materials[ 6 ]->SendToShader( *this->Shaders[ 6 ] );
+			this->Textures[ 3 ]->Bind( 3 );
+			this->Shaders[ 6 ]->Use( );
+
+			if ( glfwGetKey( Window, GLFW_KEY_A ) == GLFW_PRESS )
+			{
+				Meshes[ 6 ]->Rotate( glm::vec3( 0, 0, -0.1 ) );
+			}
+
+			if (glfwGetKey(Window, GLFW_KEY_D) == GLFW_PRESS)
+			{
+				Meshes[ 6 ]->Rotate( glm::vec3( 0, 0, 0.1 ) );
+			}
 		}
 		
 		// Renders objects to the screen, updates window image.
 		void Render( )
 		{
-			//WindowKeyboardInput( this->Window, *this->Meshes[ GAUGE_MESH ] );
-
 			glClearColor( 0.0f, 0.0f, 0.0f, 1.0f );
 			glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT );
 
 			this->Update( );
 
-			while ( glfwGetTime( ) < this->Time + 1.0f / 60 )
-			{
-				this->BoosterBox->Render( this->Shaders[ TEXT_SHADER ], this->Shaders[ RED_TEXT_SHADER ], this->Shaders[ PLATE_SHADER ], this->Shaders[ GAUGE_SHADER ], this->Shaders[ DIAL_SHADER ] );
-				this->SustainerBox->Render( this->Shaders[ TEXT_SHADER ], this->Shaders[ RED_TEXT_SHADER ], this->Shaders[ PLATE_SHADER ], this->Shaders[ GAUGE_SHADER ], this->Shaders[ DIAL_SHADER ] );
-				this->Meshes[ 0 ]->Render( this->Shaders[ HART_SHADER ] );
-				this->Meshes[ 1 ]->Render( this->Shaders[ PLATE_SHADER ] ); 
-				this->Meshes[ 2 ]->Render( this->Shaders[ TEXT_SHADER ] );
-				this->Meshes[ 3 ]->Render( this->Shaders[ PLATE_SHADER ] );
-				this->Meshes[ 4 ]->Render( this->Shaders[ TEXT_SHADER ] );
-				this->Meshes[ 5 ]->Render( this->Shaders[ PLATE_SHADER ] );
-			}
-			this->Time += 1.0f / 60;
+			glDepthMask(GL_FALSE);
+			//this->Meshes[ 0 ]->Render( this->Shaders[ HART_SHADER ] );
+			this->Meshes[ 1 ]->Render( this->Shaders[ PLATE_SHADER ] ); 
+			glDepthMask(GL_TRUE);
+			this->BoosterBox->Render(this->Shaders[TEXT_SHADER], this->Shaders[RED_TEXT_SHADER], this->Shaders[PLATE_SHADER], this->Shaders[GAUGE_SHADER], this->Shaders[DIAL_SHADER]);
+			this->SustainerBox->Render(this->Shaders[TEXT_SHADER], this->Shaders[RED_TEXT_SHADER], this->Shaders[PLATE_SHADER], this->Shaders[GAUGE_SHADER], this->Shaders[DIAL_SHADER]);
+			this->Meshes[ 6 ]->Render( this->Shaders[ 6 ] );
 
 			glfwSwapBuffers( this->Window );
 			glFlush( );

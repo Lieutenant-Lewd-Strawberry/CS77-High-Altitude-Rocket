@@ -146,6 +146,8 @@
     <None Include="DialVertex.glsl" />
     <None Include="GaugeFragment.glsl" />
     <None Include="GaugeVertex.glsl" />
+    <None Include="TerrainFragment.glsl" />
+    <None Include="TerrainVertex.glsl" />
     <None Include="TextFragment.glsl" />
     <None Include="TextVertex.glsl" />
   </ItemGroup>

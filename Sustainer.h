@@ -63,9 +63,13 @@ class Sustainer
 		float MaxSpeed;
 		Readout* SustainerMaxSpeedReadout;
 
+		Mesh* SustainerApogeeTitle;
+		Mesh* SustainerApogeePlate;
 		Readout* SustainerApogeeReadout;
 		float Apogee;
 
+		Mesh* SustainerAngleTitle;
+		Mesh* SustainerAnglePlate;
 		Mesh* AngleLineHorizontal;
 		Mesh* AngleLineVertical;
 		Mesh* AngleLineVariable;
@@ -129,9 +133,13 @@ class Sustainer
 			this->MaxSpeed = 0.0f;
 			this->SustainerMaxSpeedReadout = new Readout(this->Mach, 1125.0f, 843.0f, -40.0);
 
+			this->SustainerApogeeTitle = new Mesh("Apogee.obj", glm::vec3(800, 819.0f, -10.0f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(20.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+			this->SustainerApogeePlate = new Mesh("Readout.obj", glm::vec3(800.0f, 843.0f, -40.0f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(35.0f, 35.0f, 35.0f));
 			Apogee = 0.0f;
 			this->SustainerApogeeReadout = new Readout(this->Apogee, 800.0f, 843.0f, -40.0);
 
+			this->SustainerAngleTitle = new Mesh("Angle.obj", glm::vec3(860.0f, 50.0f, -10.0f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(20.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+			this->SustainerAnglePlate = new Mesh("Readout.obj", glm::vec3(800.0f, 105.0f, -40.0f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(50.0f, 50.0f, 90.0f));
 			this->AngleLineHorizontal = new Mesh( "AngleLine.obj", glm::vec3( 800.0f, 80.0f, -10.0f ), glm::vec3( 90.0f, 0.0f, 0.0f ), glm::vec3( 75.0f, 75.0f, 55.0f ), glm::vec3(1.0f, 0.3f, 0.3f));
 			this->AngleLineVertical = new Mesh( "AngleLine.obj", glm::vec3( 800.0f, 125.0f, -10.0f ), glm::vec3( 90.0f, 90.0f, 0.0f ), glm::vec3( 22.0f, 22.0f, 55.0f ), glm::vec3(1.0f, 0.3f, 0.3f));
 			this->AngleLineVariable = new Mesh( "AngleLineVariable.obj", glm::vec3( 800.0f, 80.0f, -10.0f ), glm::vec3( 90.0f, 90.0f, 0.0f ), glm::vec3( 22.0f, 22.0f, 22.0f ), glm::vec3(1.0f, 0.3f, 0.3f));
@@ -336,9 +344,21 @@ class Sustainer
 			TextShader->UnUse();
 
 			TextShader->Use();
+			SustainerApogeeTitle->Render(TextShader);
+			TextShader->UnUse();
+			TextShader->Use();
+			SustainerApogeePlate->Render(PlateShader);
+			TextShader->UnUse();
+			TextShader->Use();
 			SustainerApogeeReadout->Render(TextShader);
 			TextShader->UnUse();
 
+			TextShader->Use();
+			SustainerAngleTitle->Render(TextShader);
+			TextShader->UnUse();
+			TextShader->Use();
+			SustainerAnglePlate->Render(PlateShader);
+			TextShader->UnUse();
 			TextShader->Use();
 			AngleLineHorizontal->Render(TextShader);
 			TextShader->UnUse();
